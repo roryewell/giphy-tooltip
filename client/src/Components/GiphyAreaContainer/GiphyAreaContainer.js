@@ -6,15 +6,26 @@ import SelectableText from './SelectableText/SelectableText';
 
 class GiphyAreaContainer extends Component {
   state = {
-    isTooltipActive: false
+    text: 'Sample text with a dog, cat, bull, and bird',
+    isTooltipActive: false,
+    selectedText: '',
+    activeGifUrl: ''
   };
 
-  showTooltip() {
+  showTooltip = () => {
     this.setState({ isTooltipActive: true });
   }
 
-  hideTooltip() {
+  hideTooltip = () => {
     this.setState({ isTooltipActive: false });
+  }
+
+  handleMouseUp = () => {
+    if (window.getSelection()) {
+      let selectedText = window.getSelection().toString();
+      console.log('selected text', selectedText);
+      this.setState({ selectedText: selectedText });
+    }
   }
 
   async searchGiphyResults(query) {
@@ -30,7 +41,10 @@ class GiphyAreaContainer extends Component {
     return (
       <div>
         <Header />
-        <SelectableText />
+        <SelectableText
+          text={this.state.text}
+          handleMouseUp={this.handleMouseUp}
+        />
       </div>
     );
   }
