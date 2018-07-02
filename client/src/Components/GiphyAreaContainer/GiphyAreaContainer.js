@@ -8,7 +8,6 @@ import BodyText from './BodyText/BodyText';
 class GiphyAreaContainer extends Component {
   state = {
     text: 'Sample text with a dog, cat, bull, and bird!',
-    isTooltipActive: false,
     selectedText: '',
     gif: '',
     gifLeftPosition: '',
