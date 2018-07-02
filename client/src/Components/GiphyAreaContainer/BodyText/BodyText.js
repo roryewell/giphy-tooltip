@@ -4,16 +4,22 @@ import styles from './BodyText.css';
 const bodyText = (props) => {
   let tooltip = null;
 
-  if (props.selectedText) {
+  if (props.selectedText && props.gif) {
+    let gif = (
+      <img src={props.gif.url} alt="Crazy GIF"/>
+    );
+
+    let tooltipPosition = {
+      left: props.gifLeftPosition - ((props.gif.width ? props.gif.width : 200) / 2) - 15 + (props.textWidth / 2) + 'px',
+      top: props.gifTopPosition + 'px'
+    };
+
     tooltip = (
-      <div id="tooltip" className={styles.Tooltip}>
-        Testing this
-        <img src={props.gifUrl} alt="Crazy GIF"/>
+      <div id="tooltip" style={tooltipPosition} className={styles.Tooltip}>
+        {gif}
       </div>
     );
   }
-
-  console.log('tooltip', tooltip);
 
   return (
     <div className={styles.BodyText}>

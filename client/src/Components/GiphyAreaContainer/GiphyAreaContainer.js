@@ -7,28 +7,24 @@ import BodyText from './BodyText/BodyText';
 
 class GiphyAreaContainer extends Component {
   state = {
-    text: 'Sample text with a dog, cat, bull, and bird',
+    text: 'Sample text with a dog, cat, bull, and bird!',
     isTooltipActive: false,
     selectedText: '',
-    gifUrl: '',
+    gif: '',
     gifLeftPosition: '',
-    gifTopPosition: ''
+    gifTopPosition: '',
+    textWidth: ''
   }
 
-  showTooltip = () => {
-    this.setState({ isTooltipActive: true });
-  }
-
-  hideTooltip = () => {
-    this.setState({ isTooltipActive: false });
-  }
-
-  handleMouseUp = async () => {
+  handleMouseUp = (event) => {
     if (window.getSelection()) {
       let selectedText = window.getSelection().toString();
 
       if (selectedText) {
-        this.setState({ selectedText: selectedText });
+        let range = window.getSelection().getRangeAt(0);
+        let rect = range.getBoundingClientRect();
+
+        this.setState({ selectedText: selectedText, gifLeftPosition: rect.left, gifTopPosition: rect.top + 30, textWidth: rect.width });
         this.searchGiphyResults(selectedText);
       } else {
         this.clearSelectedTextData();
@@ -38,9 +34,11 @@ class GiphyAreaContainer extends Component {
 
   searchGiphyResults = async (query) => {
     try {
-      const response = await axios.get(`http://api.giphy.com/v1/gifs/search?q=${query}&api_key=${process.env.REACT_APP_GIPHY_API_KEY}`);
-      let gifUrl = response.data.data[0].images.fixed_width.url;
-      this.setState({ gifUrl: gifUrl });
+      if (query) {
+        const response = await axios.get(`http://api.giphy.com/v1/gifs/search?q=${query}&api_key=${process.env.REACT_APP_GIPHY_API_KEY}`);
+        let gif = response.data.data[0].images.fixed_width;
+        this.setState({ gif: gif });
+      }
     } catch (error) {
       this.clearSelectedTextData();
       console.log('Error retrieving GIFs from Giphy');
@@ -50,9 +48,10 @@ class GiphyAreaContainer extends Component {
   clearSelectedTextData = () => {
     this.setState({
       selectedText: '',
-      gifUrl: '',
+      gif: '',
       gifLeftPosition: '',
-      gifTopPosition: ''
+      gifTopPosition: '',
+      textWidth: ''
     });
   }
 
@@ -67,9 +66,10 @@ class GiphyAreaContainer extends Component {
           text={this.state.text}
           selectedText={this.state.selectedText}
           handleMouseUp={this.handleMouseUp}
-          gifUrl={this.state.gifUrl}
+          gif={this.state.gif}
           gifLeftPosition={this.state.gifLeftPosition}
           gifTopPosition={this.state.gifTopPosition}
+          textWidth={this.state.textWidth}
         />
       </div>
     );

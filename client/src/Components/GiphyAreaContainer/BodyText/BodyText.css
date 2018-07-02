@@ -3,10 +3,23 @@
 }
 
 .BodyText .Tooltip {
-  width: 250px;
+  display: block;
+  position: absolute;
+  width: 200px;
   z-index: 101;
-  background-color: #fff;
-  border: 3px solid #666;
+  background-color: white;
+  border: 3px solid black;
   padding: 12px 12px 12px 12px;
-  border-radius: 0px 25px 0px 25px;
+  text-align: center;
+}
+
+.BodyText .Tooltip::after {
+  content: " ";
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  margin-left: -13px;
+  border-width: 13px;
+  border-style: solid;
+  border-color: transparent transparent black;
 }
