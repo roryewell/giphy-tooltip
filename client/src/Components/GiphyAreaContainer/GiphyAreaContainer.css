@@ -1,0 +1,6 @@
+.GiphyAreaContainer {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 2fr 1fr 5fr;
+  justify-items: center;
+}

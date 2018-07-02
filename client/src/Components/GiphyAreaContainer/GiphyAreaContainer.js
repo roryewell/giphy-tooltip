@@ -1,16 +1,19 @@
 import React, { Component } from 'react';
+import styles from './GiphyAreaContainer.css';
 import axios from 'axios';
 
 import Header from './Header/Header';
-import SelectableText from './SelectableText/SelectableText';
+import BodyText from './BodyText/BodyText';
 
 class GiphyAreaContainer extends Component {
   state = {
     text: 'Sample text with a dog, cat, bull, and bird',
     isTooltipActive: false,
     selectedText: '',
-    activeGifUrl: ''
-  };
+    gifUrl: '',
+    gifLeftPosition: '',
+    gifTopPosition: ''
+  }
 
   showTooltip = () => {
     this.setState({ isTooltipActive: true });
@@ -20,30 +23,53 @@ class GiphyAreaContainer extends Component {
     this.setState({ isTooltipActive: false });
   }
 
-  handleMouseUp = () => {
+  handleMouseUp = async () => {
     if (window.getSelection()) {
       let selectedText = window.getSelection().toString();
-      console.log('selected text', selectedText);
-      this.setState({ selectedText: selectedText });
+
+      if (selectedText) {
+        this.setState({ selectedText: selectedText });
+        this.searchGiphyResults(selectedText);
+      } else {
+        this.clearSelectedTextData();
+      }
     }
   }
 
-  async searchGiphyResults(query) {
+  searchGiphyResults = async (query) => {
     try {
       const response = await axios.get(`http://api.giphy.com/v1/gifs/search?q=${query}&api_key=${process.env.REACT_APP_GIPHY_API_KEY}`);
-      console.log('response', response);
+      let gifUrl = response.data.data[0].images.fixed_width.url;
+      this.setState({ gifUrl: gifUrl });
     } catch (error) {
-
+      this.clearSelectedTextData();
+      console.log('Error retrieving GIFs from Giphy');
     }
+  }
+
+  clearSelectedTextData = () => {
+    this.setState({
+      selectedText: '',
+      gifUrl: '',
+      gifLeftPosition: '',
+      gifTopPosition: ''
+    });
   }
 
   render() {
     return (
-      <div>
+      <div
+        className={styles.GiphyAreaContainer}
+        onMouseUp={this.handleMouseUp}>
+        <div></div>
         <Header />
-        <SelectableText
+        <BodyText
           text={this.state.text}
+          selectedText={this.state.selectedText}
           handleMouseUp={this.handleMouseUp}
+          gifUrl={this.state.gifUrl}
+          gifLeftPosition={this.state.gifLeftPosition}
+          gifTopPosition={this.state.gifTopPosition}
         />
       </div>
     );
